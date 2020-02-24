@@ -12,11 +12,24 @@ script:
 
 after_success:
   - docker build -t $DOCKER_ID/fib-client ./client
-  - docker build -t "$DOCKER_ID"/fib-nginx ./nginx
-  - docker build -t "$DOCKER_ID"/fib-server ./server
-  - docker build -t "$DOCKER_ID"/fib-worker ./worker
+  - docker build -t $DOCKER_ID/fib-nginx ./nginx
+  - docker build -t $DOCKER_ID/fib-server ./server
+  - docker build -t $DOCKER_ID/fib-worker ./worker
   - docker login -u $DOCKER_ID -p $DOCKER_PASSWORD
-  - docker push "$DOCKER_ID"/fib-client
-  - docker push "$DOCKER_ID"/fib-nginx
-  - docker push "$DOCKER_ID"/fib-worker
-  - docker push "$DOCKER_ID"/fib-server
+  - docker push $DOCKER_ID/fib-client
+  - docker push $DOCKER_ID/fib-nginx
+  - docker push $DOCKER_ID/fib-server
+  - docker push $DOCKER_ID/fib-worker
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: docker-complex-fib
+  env: DockerComplexFib-env
+  bucket_name: elasticbeanstalk-us-east-2-540360994543
+  bucket_path: docker-complex-fib
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+  
